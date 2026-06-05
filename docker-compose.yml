@@ -1,0 +1,40 @@
+﻿version: '3.8'
+
+services:
+  minha-app:
+    build: .
+    ports:
+      - "8085:8080"
+    networks:
+      - devops-net
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8090:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - devops-net
+
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    ports:
+      - "8091:80"
+      - "2222:22"
+    volumes:
+      - gitlab_data:/var/opt/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_config:/etc/gitlab
+    networks:
+      - devops-net
+
+volumes:
+  jenkins_home:
+  gitlab_data:
+  gitlab_logs:
+  gitlab_config:
+
+networks:
+  devops-net:
