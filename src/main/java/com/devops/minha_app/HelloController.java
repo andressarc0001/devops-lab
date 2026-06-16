@@ -10,4 +10,9 @@ public class HelloController {
     public String hello() {
         return "Olá, mundo DevOps! 🚀";
     }
+
+    @GetMapping("/devops")
+    public String devops() {
+        return "Bem vindo ao mundo DevOps! 🚀";
+    }
 }
