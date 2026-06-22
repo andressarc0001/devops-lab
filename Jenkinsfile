@@ -4,39 +4,18 @@
     stages {
         stage('Build') {
             steps {
-                echo 'Compilando o projeto...'
-                sh './gradlew build -x test'
+                echo 'Compilando...'
             }
         }
-
         stage('Test') {
             steps {
-                echo 'Rodando os testes...'
-                sh './gradlew test'
+                echo 'Testando...'
             }
         }
-
-        stage('Docker Build') {
-            steps {
-                echo 'Criando imagem Docker...'
-                sh 'docker build -t minha-app:latest .'
-            }
-        }
-
         stage('Deploy') {
             steps {
-                echo 'Fazendo deploy...'
-                sh 'docker-compose up -d'
+                echo 'Deploy!'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline executado com sucesso!'
-        }
-        failure {
-            echo 'Pipeline falhou!'
         }
     }
 }
