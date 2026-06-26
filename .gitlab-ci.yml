@@ -1,21 +1,60 @@
 stages:
   - build
   - test
+  - docker
   - deploy
+
+variables:
+  IMAGE_NAME: devops-lab-app
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+  REGISTRY: registry:5000
+
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .gradle/
+    - build/
 
 build:
   stage: build
+  image: gradle:8-jdk17
   script:
-    - echo 'Compilando a aplicacao...'
-    - ./gradlew build -x test
+    - echo "==> Compilando..."
+    - gradle build -x test --no-daemon
+  artifacts:
+    paths:
+      - build/libs/*.jar
+    expire_in: 1 hour
 
 test:
   stage: test
+  image: gradle:8-jdk17
   script:
-    - echo 'Rodando os testes...'
-    - ./gradlew test
+    - echo "==> Rodando testes..."
+    - gradle test --no-daemon
 
-deploy:
+build-docker:
+  stage: docker
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - echo "==> Buildando imagem Docker..."
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+  only:
+    - main
+    - develop
+
+deploy-homolog:
   stage: deploy
   script:
-    - echo 'Fazendo deploy...'
+    - echo "==> Deploy em homologacao!"
+  environment:
+    name: homologacao
+  only:
+    - develop
+
+deploy-prod:
+  stage: deploy
