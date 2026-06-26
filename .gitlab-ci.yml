@@ -58,3 +58,10 @@ deploy-homolog:
 
 deploy-prod:
   stage: deploy
+  script:
+    - echo "==> Deploy em producao!"
+  environment:
+    name: producao
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
