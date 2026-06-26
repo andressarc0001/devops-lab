@@ -1,0 +1,21 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - echo 'Compilando a aplicacao...'
+    - ./gradlew build -x test
+
+test:
+  stage: test
+  script:
+    - echo 'Rodando os testes...'
+    - ./gradlew test
+
+deploy:
+  stage: deploy
+  script:
+    - echo 'Fazendo deploy...'
