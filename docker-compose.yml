@@ -59,12 +59,33 @@ services:
     networks:
       - devops-net
 
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - devops-net
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - devops-net
+
 volumes:
   jenkins_home:
   gitlab_data:
   gitlab_logs:
   gitlab_config:
   registry_data:
+  grafana_data:
 
 networks:
   devops-net:
