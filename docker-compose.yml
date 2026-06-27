@@ -28,6 +28,17 @@ services:
     networks:
       - devops-net
 
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - gitlab_runner_config:/etc/gitlab-runner
+    networks:
+      - devops-net
+    depends_on:
+      - gitlab
+
   registry:
     image: registry:2
     ports:
@@ -86,6 +97,7 @@ volumes:
   gitlab_config:
   registry_data:
   grafana_data:
+  gitlab_runner_config:
 
 networks:
   devops-net:
