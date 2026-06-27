@@ -17,7 +17,7 @@ cache:
 
 build:
   stage: build
-  image: gradle:8-jdk17
+  image: gradle:8-jdk23
   script:
     - echo "==> Compilando..."
     - gradle build -x test --no-daemon
@@ -28,7 +28,7 @@ build:
 
 test:
   stage: test
-  image: gradle:8-jdk17
+  image: gradle:8-jdk23
   script:
     - echo "==> Rodando testes..."
     - gradle test --no-daemon
