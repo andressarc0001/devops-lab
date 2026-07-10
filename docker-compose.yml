@@ -104,6 +104,53 @@ services:
     networks:
       - devops-net
 
+  seaweedfs-master:
+    image: chrislusf/seaweedfs:latest
+    ports:
+      - "9333:9333"
+      - "19333:19333"
+    command: master
+    networks:
+      - devops-net
+
+  seaweedfs-volume:
+    image: chrislusf/seaweedfs:latest
+    ports:
+      - "8082:8080"
+    command: volume -mserver=seaweedfs-master:9333 -dir=/data -port=8080
+    volumes:
+      - seaweedfs_data:/data
+    networks:
+      - devops-net
+    depends_on:
+      - seaweedfs-master
+
+  seaweedfs-filer:
+    image: chrislusf/seaweedfs:latest
+    ports:
+      - "8888:8888"
+      - "18888:18888"
+    command: filer -master=seaweedfs-master:9333
+    networks:
+      - devops-net
+    depends_on:
+      - seaweedfs-master
+      - seaweedfs-volume
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.0
+    ports:
+      - "8180:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+      KC_DB: dev-file
+    command: start-dev
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    networks:
+      - devops-net
+
   loki:
     image: grafana/loki:2.9.0
     ports:
@@ -132,6 +179,9 @@ volumes:
   grafana_data:
   gitlab_runner_config:
   minio_data:
+  seaweedfs_data:
+  keycloak_data:
+
 
 networks:
   devops-net:
