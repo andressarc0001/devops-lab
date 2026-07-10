@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "oidc-spa": "^10.2.6"
+  }
+}
